@@ -1,0 +1,6 @@
+[submodule "sf2cute"]
+	path = sf2cute
+	url = https://github.com/gocha/sf2cute.git
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib.git
