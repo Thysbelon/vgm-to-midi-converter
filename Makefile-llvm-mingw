@@ -1,0 +1,38 @@
+CC=x86_64-w64-mingw32-gcc
+CPPC=x86_64-w64-mingw32-g++
+
+CFLAGS=
+CPPFLAGS= -std=c++17
+IFLAGS= -Izlib
+LINKFLAGS= -static
+
+all: vgm-to-midi-converter
+
+vgm-to-midi-converter: main.cpp libsmfc.o libsmfcx.o adpcm.o YM2151.o data-bank-to-sf2.o sf2cute/build/libsf2cute.a zlib/libz.a
+	$(CPPC) $(IFLAGS) $^ -o $@ $(CPPFLAGS) $(LINKFLAGS)
+	
+libsmfc.o: libsmf/libsmfc.c
+	$(CC) $(IFLAGS) -c $^ -o $@ $(CFLAGS)
+
+libsmfcx.o: libsmf/libsmfcx.c
+	$(CC) $(IFLAGS) -c $^ -o $@ $(CFLAGS)
+
+adpcm.o: adpcm/adpcm.c
+	$(CC) $(IFLAGS) -c $^ -o $@ $(CFLAGS)
+
+YM2151.o: YM2151.cpp
+	$(CPPC) $(IFLAGS) -c $^ -o $@ $(CPPFLAGS)
+
+data-bank-to-sf2.o: data-bank-to-sf2.cpp
+	$(CPPC) $(IFLAGS) -c $^ -o $@ $(CPPFLAGS)
+
+zlib/libz.a: 
+	make PREFIX=x86_64-w64-mingw32- --directory=zlib -f win32/Makefile.gcc
+
+sf2cute/build/libsf2cute.a:
+	cd sf2cute && cmake -DCMAKE_C_COMPILER=$(CC) -DCMAKE_CXX_COMPILER=$(CPPC) -B build . && cd build && make
+
+clean:
+	-rm -f vgm-to-midi-converter *.exe *.o
+	-make --directory=zlib -f win32/Makefile.gcc clean
+	-rm -rf sf2cute/build

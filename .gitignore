@@ -1,0 +1,9 @@
+*.o
+*.exe
+vgm-to-midi-converter
+*.sf2
+*.mid
+*.vgm
+*.vgz
+my-notes.txt
+build/
